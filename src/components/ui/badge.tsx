@@ -49,4 +49,6 @@ function Badge({
   })
 }
 
+// The variant factory is intentionally exported for composition by consumers.
+// eslint-disable-next-line react-refresh/only-export-components
 export { Badge, badgeVariants }
