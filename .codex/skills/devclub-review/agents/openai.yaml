@@ -1,0 +1,4 @@
+interface:
+  display_name: "DevClub Review"
+  short_description: "Revisão crítica e gates de qualidade"
+  default_prompt: "Use $devclub-review para auditar esta entrega, atribuir notas e decidir se ela está pronta."

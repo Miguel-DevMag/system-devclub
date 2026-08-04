@@ -1,0 +1,4 @@
+interface:
+  display_name: "DevClub Motion System"
+  short_description: "Linguagem de movimento e interação"
+  default_prompt: "Use $devclub-motion-system para especificar o motion desta experiência com propósito e desempenho."

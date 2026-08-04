@@ -1,0 +1,4 @@
+interface:
+  display_name: "DevClub Experience Design"
+  short_description: "Direção criativa e experiência autoral"
+  default_prompt: "Use $devclub-experience-design para definir a direção criativa e a composição desta seção antes de implementar."
