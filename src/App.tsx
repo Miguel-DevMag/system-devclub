@@ -3,19 +3,13 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { AboutSection } from "@/components/sections/AboutSection";
-import { CompaniesSection } from "@/components/sections/CompaniesSection";
-import { FormationsSection } from "@/components/sections/FormationsSection";
-import { TechnologiesSection } from "@/components/sections/TechnologiesSection";
-import { EcosystemSection } from "@/components/sections/EcosystemSection";
-import { PlatformSection } from "@/components/sections/PlatformSection";
-import { ProjectsSection } from "@/components/sections/ProjectsSection";
-import HeroToCommunityTransition from "@/experience/HeroToCommunityTransition";
-import { CommunitySection } from "@/components/sections/CommunitySection";
-import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
-import { MentorsSection } from "@/components/sections/MentorsSection";
-import { BonusSection } from "@/components/sections/BonusSection";
-import { CertificationSection } from "@/components/sections/CertificationSection";
+import { AuthoritySection } from "@/components/sections/AuthoritySection";
+import { DevClubOverviewSection } from "@/components/sections/DevClubOverviewSection";
+import { LearningJourneySection } from "@/components/sections/LearningJourneySection";
+import { PlatformExperienceSection } from "@/components/sections/PlatformExperienceSection";
+import { CommunityExperienceSection } from "@/components/sections/CommunityExperienceSection";
+import { PeopleResultsSection } from "@/components/sections/PeopleResultsSection";
+import { RecognitionSection } from "@/components/sections/RecognitionSection";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { CTASection } from "@/components/sections/CTASection";
 
@@ -23,21 +17,15 @@ function App() {
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
       <Header />
-      <main>
+      <main id="conteudo-principal" tabIndex={-1}>
         <HeroSection />
-        <AboutSection />
-        <CompaniesSection />
-        <FormationsSection />
-        <TechnologiesSection />
-        <EcosystemSection />
-        <PlatformSection />
-        <ProjectsSection />
-        <HeroToCommunityTransition />
-        <CommunitySection />
-        <TestimonialsSection />
-        <MentorsSection />
-        <BonusSection />
-        <CertificationSection />
+        <AuthoritySection />
+        <DevClubOverviewSection />
+        <LearningJourneySection />
+        <PlatformExperienceSection />
+        <CommunityExperienceSection />
+        <PeopleResultsSection />
+        <RecognitionSection />
         <FAQSection />
         <CTASection />
       </main>

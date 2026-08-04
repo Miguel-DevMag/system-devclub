@@ -1,6 +1,13 @@
 // Tokens visuais e de motion do projeto DevClub
 
 export const designTokens = {
+  energy: {
+    cyan: "#67e8f9",
+    cyanBright: "#cffafe",
+    violet: "#a78bfa",
+    complete: "#6ee7b7",
+  },
+
   colors: {
     background: "bg-neutral-950",
     surface: "bg-neutral-900",

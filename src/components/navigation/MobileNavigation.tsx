@@ -149,7 +149,7 @@ export function MobileNavigation({
                     "group mt-6 inline-flex min-h-12 w-full items-center justify-between rounded-full bg-white px-5 text-sm font-semibold text-neutral-950 outline-none transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 active:translate-y-0",
                   )}
                 >
-                  Quero ser aluno
+                  Explorar jornada
                   <ArrowUpRight aria-hidden="true" className="size-4" />
                 </a>
               </nav>

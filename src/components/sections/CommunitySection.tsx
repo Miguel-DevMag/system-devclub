@@ -737,7 +737,7 @@ export function CommunitySection() {
 
           {/* CTA textual sutil */}
           <a
-            href="#formacoes"
+            href="#jornada-aprendizado"
             className="group inline-flex items-center gap-1.5 text-xs font-medium text-cyan-400/80 transition-colors hover:text-cyan-300"
           >
             Entrar na comunidade

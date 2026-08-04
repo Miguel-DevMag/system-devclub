@@ -41,7 +41,7 @@ export function DesktopNavigation({
           !scrolled && "shadow-[0_8px_24px_-16px_rgba(255,255,255,0.5)]",
         )}
       >
-        Quero ser aluno
+        Explorar jornada
         <ArrowUpRight
           aria-hidden="true"
           className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

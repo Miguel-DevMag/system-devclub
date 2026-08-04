@@ -9,15 +9,32 @@ import { useActiveSection } from "@/components/navigation/useActiveSection";
 import { cn } from "@/lib/utils";
 
 const NAVIGATION_ITEMS = [
-  { label: "Formações", href: "#formacoes", sectionId: "formacoes" },
-  { label: "Ecossistema", href: "#ecossistema", sectionId: "ecossistema" },
+  {
+    label: "Formações",
+    href: "#jornada-aprendizado",
+    sectionId: "jornada-aprendizado",
+  },
+  {
+    label: "Ecossistema",
+    href: "#devclub-por-inteiro",
+    sectionId: "devclub-por-inteiro",
+  },
   { label: "Plataforma", href: "#plataforma", sectionId: "plataforma" },
-  { label: "Professores", href: "#mentores", sectionId: "mentores" },
   { label: "Comunidade", href: "#comunidade", sectionId: "comunidade" },
+  {
+    label: "Pessoas",
+    href: "#pessoas-resultados",
+    sectionId: "pessoas-resultados",
+  },
+  {
+    label: "Reconhecimento",
+    href: "#reconhecimento",
+    sectionId: "reconhecimento",
+  },
   { label: "FAQ", href: "#faq", sectionId: "faq" },
 ] as const satisfies readonly NavigationItem[];
 
-const STUDENT_CTA_HREF = "#formacoes" as const;
+const STUDENT_CTA_HREF = "#jornada-aprendizado" as const;
 
 export function NavigationSystem() {
   const [scrolled, setScrolled] = useState(false);
@@ -36,16 +53,23 @@ export function NavigationSystem() {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 ease-out",
-        scrolled
-          ? "border-white/12 bg-neutral-950/86 shadow-[0_12px_36px_-24px_rgba(0,0,0,0.95)] backdrop-blur-xl"
-          : "border-white/[0.06] bg-neutral-950/12",
-      )}
-    >
-      <Container>
-        <div className="grid h-[4.5rem] grid-cols-[auto_1fr_auto] items-center gap-3 lg:gap-4 xl:gap-7">
+    <>
+      <a
+        href="#conteudo-principal"
+        className="fixed left-4 top-3 z-[80] -translate-y-24 rounded-full bg-white px-4 py-2 text-sm font-semibold text-neutral-950 shadow-lg outline-none transition-transform focus-visible:translate-y-0 focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+      >
+        Ir para o conteúdo principal
+      </a>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 ease-out",
+          scrolled
+            ? "border-white/12 bg-neutral-950/86 shadow-[0_12px_36px_-24px_rgba(0,0,0,0.95)] backdrop-blur-xl"
+            : "border-white/[0.06] bg-neutral-950/12",
+        )}
+      >
+        <Container>
+          <div className="grid h-[4.5rem] grid-cols-[auto_1fr_auto] items-center gap-3 lg:gap-4 xl:gap-7">
           <a
             href="#hero"
             aria-label="DevClub — ir para o início"
@@ -73,8 +97,9 @@ export function NavigationSystem() {
             open={mobileOpen}
             setOpen={setMobileOpen}
           />
-        </div>
-      </Container>
-    </header>
+          </div>
+        </Container>
+      </header>
+    </>
   );
 }
