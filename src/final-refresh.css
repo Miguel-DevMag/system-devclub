@@ -1,0 +1,512 @@
+/* Final scoped refinement: only the sections explicitly approved by the user. */
+
+#devclub-por-inteiro,
+#jornada-aprendizado,
+#plataforma,
+#reconhecimento,
+#faq,
+#cta {
+  scroll-margin-top: 5rem;
+}
+
+.hero-definitive--refined .hero-stage {
+  min-height: min(58rem, 100svh);
+  align-items: center;
+  padding-top: 6.25rem;
+}
+
+.hero-definitive--refined .hero-title {
+  max-width: 11.2ch;
+  font-size: clamp(3.65rem, 6.35vw, 6.55rem);
+  line-height: 0.88;
+}
+
+.hero-definitive--refined .hero-title__line:first-child {
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.hero-definitive--refined .hero-description {
+  max-width: 37rem;
+  font-size: clamp(0.98rem, 1.18vw, 1.1rem);
+}
+
+.hero-definitive--refined .hero-actions a {
+  border-radius: 999px;
+}
+
+.hero-world--refined::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at 70% 35%, rgba(124, 234, 181, 0.07), transparent 38%);
+  background-size: 5rem 100%, 100% 5rem, auto;
+}
+
+.hero-world--refined .hero-product--refined {
+  right: 30%;
+  width: min(70%, 36rem);
+  border-color: rgba(124, 234, 181, 0.22);
+}
+
+.hero-world--refined .hero-product__media {
+  aspect-ratio: 16 / 8.4;
+  padding: 0.65rem;
+  background: #040706;
+}
+
+.hero-world--refined .hero-product__media img {
+  object-fit: contain;
+}
+
+/* DevClub por inteiro: a arquitetura vira um mapa legível, não um diagrama cru. */
+.overview-section {
+  background:
+    radial-gradient(circle at 72% 46%, rgba(34, 211, 153, 0.08), transparent 33rem),
+    linear-gradient(135deg, #0d1211, #101515 58%, #0b0e10) !important;
+}
+
+.overview-section .overview-architecture {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.2rem;
+  background: rgba(6, 11, 10, 0.42);
+  box-shadow: 0 2.5rem 7rem -3.5rem rgba(0, 0, 0, 0.92);
+}
+
+.overview-section .overview-pillar {
+  border-color: rgba(255, 255, 255, 0.13);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+  backdrop-filter: blur(10px);
+}
+
+.overview-section .overview-pillar h3 {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.overview-section .overview-pillar p {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+/* Formações: mais contraste entre decisão e conteúdo. */
+.journey-refined__experience {
+  grid-template-columns: minmax(15rem, 0.58fr) minmax(0, 1.42fr);
+}
+
+.journey-refined__steps button {
+  position: relative;
+  overflow: hidden;
+}
+
+.journey-refined__steps button::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  content: "";
+  background: var(--refresh-accent);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 220ms var(--refresh-ease);
+}
+
+.journey-refined__steps button[aria-selected="true"]::before {
+  transform: scaleY(1);
+}
+
+.journey-refined__panel {
+  position: relative;
+  overflow: hidden;
+  min-height: 28rem;
+  border: 1px solid rgba(124, 234, 181, 0.18);
+  border-left-color: rgba(124, 234, 181, 0.72);
+  background:
+    radial-gradient(circle at 85% 15%, rgba(124, 234, 181, 0.12), transparent 18rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018));
+}
+
+.journey-refined__panel::after {
+  position: absolute;
+  right: -0.06em;
+  bottom: -0.18em;
+  content: attr(data-step);
+  color: rgba(255, 255, 255, 0.025);
+  font-size: clamp(8rem, 19vw, 18rem);
+  font-weight: 800;
+  line-height: 0.8;
+  pointer-events: none;
+}
+
+/* Plataforma: imagem pública oficial e detalhes demonstrados sem simular UI interna. */
+.pshow-section--refined {
+  background:
+    radial-gradient(circle at 18% 48%, rgba(124, 234, 181, 0.07), transparent 28rem),
+    #0b100e;
+}
+
+.platform-verified__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.65fr);
+  gap: 1px;
+  margin-top: clamp(4rem, 8vw, 7rem);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 2.5rem 7rem -3.5rem rgba(0, 0, 0, 0.9);
+}
+
+.platform-verified__visual {
+  min-width: 0;
+  margin: 0;
+  background: #050807;
+}
+
+.platform-verified__source {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.66rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.platform-verified__source::before {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  content: "";
+  background: #7ceab5;
+  box-shadow: 0 0 0 0.28rem rgba(124, 234, 181, 0.08);
+}
+
+.platform-verified__source span {
+  margin-right: auto;
+}
+
+.platform-verified__source small {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.platform-verified__media {
+  display: grid;
+  min-height: clamp(24rem, 43vw, 38rem);
+  place-items: center;
+  padding: clamp(1.2rem, 4vw, 3.5rem);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.027) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.027) 1px, transparent 1px),
+    radial-gradient(circle at 50% 45%, rgba(111, 66, 193, 0.17), transparent 25rem),
+    #070a09;
+  background-size: 4.5rem 4.5rem, 4.5rem 4.5rem, auto, auto;
+}
+
+.platform-verified__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.9) contrast(1.03) drop-shadow(0 2rem 3rem rgba(0, 0, 0, 0.55));
+}
+
+.platform-verified__visual figcaption {
+  min-height: 4.5rem;
+  padding: 1rem 1.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.54);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.platform-verified__details {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  background: #0d1411;
+}
+
+.platform-verified__tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.platform-verified__tabs button {
+  display: grid;
+  min-height: 6.1rem;
+  place-items: center;
+  gap: 0.35rem;
+  padding: 0.8rem 0.45rem;
+  border: 0;
+  color: rgba(255, 255, 255, 0.48);
+  background: transparent;
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.platform-verified__tabs button:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.platform-verified__tabs button:hover,
+.platform-verified__tabs button[aria-selected="true"] {
+  color: #fff;
+  background: rgba(124, 234, 181, 0.075);
+}
+
+.platform-verified__tabs button:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: -2px;
+}
+
+.platform-verified__tabs button span {
+  color: #7ceab5;
+  font-size: 0.56rem;
+}
+
+.platform-verified__tabs button svg {
+  width: 1.05rem;
+}
+
+.platform-verified__tabs button strong {
+  font-size: 0.76rem;
+}
+
+.platform-verified__panel {
+  display: grid;
+  align-content: start;
+  min-height: 23rem;
+  padding: clamp(1.7rem, 4vw, 3rem);
+}
+
+.platform-verified__panel > span {
+  color: #7ceab5;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+}
+
+.platform-verified__panel h3 {
+  max-width: 9ch;
+  margin: 2rem 0 0;
+  color: #fff;
+  font-size: clamp(2.2rem, 3.8vw, 4rem);
+  font-weight: 620;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+
+.platform-verified__panel p {
+  max-width: 31ch;
+  margin: 1.3rem 0 0;
+  color: rgba(255, 255, 255, 0.58);
+  line-height: 1.7;
+}
+
+.platform-verified__actions {
+  display: grid;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.platform-verified__actions a {
+  display: flex;
+  min-height: 3.8rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1.1rem;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.platform-verified__actions a + a {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.platform-verified__actions a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.platform-verified__actions a:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: -3px;
+}
+
+.platform-verified__actions svg {
+  width: 1rem;
+}
+
+/* End of page: keep the editorial rhythm visible after the People section. */
+.institutional-recognition {
+  border-top: 1px solid rgba(11, 23, 17, 0.11);
+}
+
+.recognition-route li button,
+.faq-support,
+.institutional-cta__primary,
+.institutional-cta__secondary,
+.institutional-footer a {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms var(--refresh-ease);
+}
+
+.recognition-route li button:hover {
+  transform: translateY(-2px);
+}
+
+.faq-support:hover,
+.institutional-cta__secondary:hover {
+  border-color: rgba(183, 247, 214, 0.46);
+  background: rgba(183, 247, 214, 0.08);
+}
+
+.institutional-cta__primary:hover {
+  transform: translateY(-2px);
+  background: #d2ffe7;
+}
+
+.institutional-footer__brand img {
+  width: 4.6rem;
+}
+
+:root[data-theme="light"] .overview-section,
+:root[data-theme="light"] .journey-refined,
+:root[data-theme="light"] .pshow-section--refined,
+:root[data-theme="light"] .institutional-faq,
+:root[data-theme="light"] .institutional-cta,
+:root[data-theme="light"] .institutional-footer {
+  color: #f5f7f5;
+}
+
+@media (max-width: 1023px) {
+  .hero-definitive--refined .hero-stage {
+    min-height: auto;
+    padding-top: 7rem;
+  }
+
+  .platform-verified__stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .platform-verified__details {
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.58fr) minmax(0, 1.42fr);
+  }
+
+  .platform-verified__tabs {
+    grid-template-columns: 1fr;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 0;
+  }
+
+  .platform-verified__tabs button {
+    grid-template-columns: 1.5rem 1.5rem minmax(0, 1fr);
+    min-height: 4.7rem;
+    place-items: center start;
+    padding-inline: 1rem;
+  }
+
+  .platform-verified__tabs button:not(:last-child) {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .platform-verified__panel {
+    min-height: 18rem;
+  }
+
+  .platform-verified__actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-definitive--refined .hero-title {
+    max-width: 10ch;
+    font-size: clamp(3.3rem, 14vw, 5.1rem);
+  }
+
+  .hero-world--refined .hero-product--refined {
+    right: 24%;
+    width: 78%;
+  }
+
+  .overview-section {
+    min-height: auto;
+  }
+
+  .overview-section .overview-architecture {
+    border-radius: 0.8rem;
+  }
+
+  .journey-refined__panel {
+    min-height: 24rem;
+  }
+
+  .platform-verified__media {
+    min-height: 22rem;
+    padding: 1rem;
+    background-size: 3rem 3rem, 3rem 3rem, auto, auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-definitive--refined .hero-title {
+    max-width: 9.7ch;
+    font-size: clamp(3rem, 15vw, 4.3rem);
+  }
+
+  .platform-verified__details {
+    display: flex;
+  }
+
+  .platform-verified__tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .platform-verified__tabs button {
+    grid-template-columns: 1fr;
+    min-height: 5.8rem;
+    place-items: center;
+    padding: 0.65rem 0.35rem;
+  }
+
+  .platform-verified__tabs button:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.09);
+    border-bottom: 0;
+  }
+
+  .platform-verified__panel {
+    min-height: 19rem;
+    padding: 1.45rem;
+  }
+
+  .platform-verified__panel h3 {
+    margin-top: 1.4rem;
+    font-size: clamp(2.2rem, 12vw, 3.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-refined__steps button::before,
+  .recognition-route li button,
+  .faq-support,
+  .institutional-cta__primary,
+  .institutional-cta__secondary,
+  .platform-verified *,
+  .site-skip-link {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-world--refined .hero-product--refined {
+    bottom: 17%;
+  }
+}

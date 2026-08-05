@@ -1,156 +1,82 @@
 import { useState } from "react";
 import { ArrowRight, Code2, Layers3, Workflow } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-import n8nIcon from "@/assets/images/si-n8n.svg";
-import claudeIcon from "@/assets/images/si-claude.svg";
-import geminiIcon from "@/assets/images/si-googlegemini.svg";
-import openaiIcon from "@/assets/images/si-openai.svg";
 import { Container } from "@/components/layout/Container";
 import { motionTokens } from "@/components/motion/motion-tokens";
+import { targetedContent } from "@/data/targeted-content";
+import { usePreferences } from "@/preferences/usePreferences";
 
-const paths = [
-  {
-    id: "fundamentos",
-    index: "01",
-    title: "Fundamentos",
-    description:
-      "A base para compreender a web, organizar o raciocínio e publicar as primeiras experiências responsivas.",
-    technologies: ["HTML5", "CSS3", "JavaScript", "Git"],
-    result: "Uma interface funcional",
-    icon: Code2,
-    accent: "#67e8f9",
-  },
-  {
-    id: "fullstack",
-    index: "02",
-    title: "Fullstack JavaScript",
-    description:
-      "Front-end e back-end conectados para desenvolver produtos completos, dos componentes ao deploy.",
-    technologies: ["React", "TypeScript", "Node.js", "Bancos de dados", "Deploy"],
-    result: "Um produto completo",
-    icon: Layers3,
-    accent: "#6ee7b7",
-  },
-  {
-    id: "ia-automacoes",
-    index: "03",
-    title: "Inteligência Artificial e Automações",
-    description:
-      "Ferramentas e fluxos aplicados a tarefas reais para ampliar repertório, integração e produtividade.",
-    technologies: ["n8n", "ChatGPT", "Claude", "Gemini", "OpenAI"],
-    result: "Um fluxo inteligente",
-    icon: Workflow,
-    accent: "#c4b5fd",
-  },
-] as const;
-
-const aiIcons = [
-  { src: n8nIcon, alt: "n8n" },
-  { src: claudeIcon, alt: "Claude" },
-  { src: geminiIcon, alt: "Gemini" },
-  { src: openaiIcon, alt: "OpenAI" },
-];
+const icons = [Code2, Layers3, Workflow] as const;
 
 export function LearningJourneySection() {
   const [activePath, setActivePath] = useState(0);
-  const prefersReducedMotion = useReducedMotion();
-  const active = paths[activePath];
+  const reducedMotion = useReducedMotion() ?? false;
+  const { language } = usePreferences();
+  const content = targetedContent[language].journey;
+  const active = content.paths[activePath];
 
   return (
     <section
       id="jornada-aprendizado"
       aria-labelledby="learning-journey-title"
-      className="institutional-journey"
+      className="institutional-journey journey-refined"
     >
       <Container>
-        <header className="institutional-heading institutional-heading--journey">
-          <p className="institutional-eyebrow">Formações DevClub</p>
-          <h2 id="learning-journey-title">
-            Do primeiro código à construção de produtos completos.
-          </h2>
-          <p>
-            Três caminhos organizam a evolução do básico ao avançado, com prática,
-            projetos e repertório para continuar construindo.
-          </p>
+        <header className="journey-refined__intro">
+          <p className="institutional-eyebrow">{content.eyebrow}</p>
+          <h2 id="learning-journey-title">{content.title}</h2>
+          <p>{content.description}</p>
         </header>
 
-        <div
-          className="journey-paths"
-          style={{ "--active-accent": active.accent } as React.CSSProperties}
-        >
-          <div className="journey-paths__rail" aria-hidden="true">
-            <motion.span
-              animate={{ x: `${activePath * 100}%` }}
-              transition={{
-                duration: prefersReducedMotion ? 0 : motionTokens.duration.responsive,
-                ease: motionTokens.easing.emphasized,
-              }}
-            />
-          </div>
-
-          <div className="journey-paths__list" role="list">
-            {paths.map((path, index) => {
-              const Icon = path.icon;
+        <div className="journey-refined__experience">
+          <div className="journey-refined__steps" role="tablist" aria-label={content.eyebrow}>
+            {content.paths.map((path, index) => {
+              const Icon = icons[index];
               const isActive = activePath === index;
-
               return (
-                <motion.article
-                  key={path.id}
-                  role="listitem"
-                  data-active={isActive}
-                  className="journey-path"
-                  animate={
-                    prefersReducedMotion
-                      ? undefined
-                      : { opacity: isActive ? 1 : 0.78, y: isActive ? -4 : 0 }
-                  }
-                  transition={{
-                    duration: motionTokens.duration.responsive,
-                    ease: motionTokens.easing.standard,
-                  }}
+                <button
+                  key={path.index}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls="journey-active-panel"
+                  onClick={() => setActivePath(index)}
+                  onFocus={() => setActivePath(index)}
                 >
-                  <button
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => setActivePath(index)}
-                    onFocus={() => setActivePath(index)}
-                    onPointerEnter={(event) => {
-                      if (event.pointerType === "mouse") setActivePath(index);
-                    }}
-                  >
-                    <span className="journey-path__index">{path.index}</span>
-                    <span className="journey-path__icon" aria-hidden="true">
-                      <Icon />
-                    </span>
-                    <strong>{path.title}</strong>
-                  </button>
-
-                  <p className="journey-path__description">{path.description}</p>
-
-                  <div className="journey-path__technologies" aria-label="Tecnologias">
-                    {path.technologies.map((technology) => (
-                      <span key={technology}>{technology}</span>
-                    ))}
-                  </div>
-
-                  {path.id === "ia-automacoes" && (
-                    <div className="journey-path__ai-icons" aria-label="Ferramentas de inteligência artificial">
-                      {aiIcons.map((icon) => (
-                        <img key={icon.alt} src={icon.src} alt={icon.alt} width="24" height="24" loading="lazy" />
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="journey-path__result">
-                    <span>Resultado da etapa</span>
-                    <strong>{path.result}</strong>
-                    <ArrowRight aria-hidden="true" />
-                  </div>
-                </motion.article>
+                  <span>{path.index}</span>
+                  <Icon aria-hidden="true" />
+                  <strong>{path.title}</strong>
+                  <ArrowRight aria-hidden="true" />
+                </button>
               );
             })}
           </div>
+
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.article
+              id="journey-active-panel"
+              role="tabpanel"
+              key={active.index}
+              data-step={active.index}
+              className="journey-refined__panel"
+              initial={reducedMotion ? false : { opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={reducedMotion ? undefined : { opacity: 0, x: -8 }}
+              transition={{ duration: reducedMotion ? 0 : motionTokens.duration.responsive, ease: motionTokens.easing.standard }}
+            >
+              <span className="journey-refined__panel-index">{active.index} / 03</span>
+              <h3>{active.title}</h3>
+              <p>{active.description}</p>
+              <div className="journey-refined__technologies">
+                {active.technologies.map((technology) => <span key={technology}>{technology}</span>)}
+              </div>
+              <div className="journey-refined__result">
+                <span>{content.resultLabel}</span>
+                <strong>{active.result}</strong>
+              </div>
+            </motion.article>
+          </AnimatePresence>
         </div>
       </Container>
     </section>
