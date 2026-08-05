@@ -6,6 +6,7 @@ import { DesktopNavigation } from "@/components/navigation/DesktopNavigation";
 import { MobileNavigation } from "@/components/navigation/MobileNavigation";
 import type { NavigationItem } from "@/components/navigation/NavigationLink";
 import { useActiveSection } from "@/components/navigation/useActiveSection";
+import { officialLinks } from "@/config/official-links";
 import { cn } from "@/lib/utils";
 
 const NAVIGATION_ITEMS = [
@@ -18,6 +19,7 @@ const NAVIGATION_ITEMS = [
     label: "Ecossistema",
     href: "#devclub-por-inteiro",
     sectionId: "devclub-por-inteiro",
+    desktop: false,
   },
   { label: "Plataforma", href: "#plataforma", sectionId: "plataforma" },
   { label: "Comunidade", href: "#comunidade", sectionId: "comunidade" },
@@ -30,11 +32,10 @@ const NAVIGATION_ITEMS = [
     label: "Reconhecimento",
     href: "#reconhecimento",
     sectionId: "reconhecimento",
+    desktop: false,
   },
   { label: "FAQ", href: "#faq", sectionId: "faq" },
 ] as const satisfies readonly NavigationItem[];
-
-const STUDENT_CTA_HREF = "#jornada-aprendizado" as const;
 
 export function NavigationSystem() {
   const [scrolled, setScrolled] = useState(false);
@@ -85,15 +86,15 @@ export function NavigationSystem() {
 
           <DesktopNavigation
             activeSection={activeSection}
-            ctaHref={STUDENT_CTA_HREF}
-            items={NAVIGATION_ITEMS}
+            ctaHref={officialLinks.studentArea}
+            items={NAVIGATION_ITEMS.filter((item) => !("desktop" in item) || item.desktop !== false)}
             scrolled={scrolled}
           />
 
           <MobileNavigation
             activeSection={activeSection}
-            ctaHref={STUDENT_CTA_HREF}
-            items={NAVIGATION_ITEMS}
+            ctaHref={officialLinks.studentArea}
+            items={NAVIGATION_ITEMS.filter((item) => !("desktop" in item) || item.desktop !== false)}
             open={mobileOpen}
             setOpen={setMobileOpen}
           />

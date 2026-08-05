@@ -1,0 +1,22 @@
+@media (prefers-reduced-motion: reduce) {
+  .ecosystem-system__header,
+  .ecosystem-core,
+  .ecosystem-relation {
+    opacity: 1 !important;
+  }
+
+  .ecosystem-system__header,
+  .ecosystem-relation {
+    transform: none !important;
+  }
+
+  .ecosystem-core {
+    transform: translate(-50%, -50%) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 899px) {
+  .ecosystem-core {
+    transform: none !important;
+  }
+}

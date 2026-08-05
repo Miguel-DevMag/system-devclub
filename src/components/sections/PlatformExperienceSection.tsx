@@ -1,86 +1,64 @@
-import { useRef, useState } from "react";
-import {
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-} from "motion/react";
+/**
+ * PlatformExperienceSection.tsx
+ *
+ * Seção institucional da Plataforma DevClub.
+ * Responde: "Como é estudar e construir dentro do DevClub?"
+ *
+ * Composição assimétrica: contexto editorial + screenshot real protagonista.
+ * Fundo grafite ligeiramente mais claro que as seções anteriores — diferenciação clara.
+ * Sem sticky prolongado. Altura máxima próxima de 100svh.
+ * id="plataforma" preservado para navegação do Header.
+ */
+
+import { motion, useInView, useReducedMotion } from "motion/react";
+import { useRef } from "react";
 
 import { Container } from "@/components/layout/Container";
+import { PlatformShowcase } from "@/components/platform/PlatformShowcase";
 import { motionTokens } from "@/components/motion/motion-tokens";
-import { ProductLearningSurface } from "@/components/platform/ProductLearningSurface";
-import { platformExperience } from "@/data/platform-experience";
 
 export function PlatformExperienceSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [activeStage, setActiveStage] = useState(0);
   const prefersReducedMotion = useReducedMotion();
   const reducedMotion = prefersReducedMotion ?? false;
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (reducedMotion) return;
-    const nextStage = Math.min(
-      platformExperience.stages.length - 1,
-      Math.floor(latest * platformExperience.stages.length),
-    );
-    setActiveStage((current) => (current === nextStage ? current : nextStage));
-  });
+  const isInView = useInView(sectionRef, { once: true, margin: "-8% 0px" });
 
   return (
     <section
       ref={sectionRef}
       id="plataforma"
-      aria-labelledby="platform-experience-title"
-      className="platform-experience-section"
+      aria-labelledby="platform-showcase-title"
+      className="pshow-section"
     >
-      <div className="platform-experience__entry" aria-hidden="true">
-        <span>produto construído</span>
-        <i />
-        <small>entra na experiência</small>
+      {/* Atmosfera de fundo */}
+      <div className="pshow-section__bg" aria-hidden="true">
+        <div className="pshow-section__noise noise-overlay" />
+        {/* Luz suave vindo da direita — simula o screenshot iluminando a seção */}
+        <motion.div
+          className="pshow-section__ambient-light"
+          initial={reducedMotion ? undefined : { opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : undefined}
+          transition={{
+            duration: reducedMotion ? 0 : 0.9,
+            delay: 0.15,
+            ease: motionTokens.easing.standard,
+          }}
+        />
       </div>
-      <div className="platform-experience__ambient" aria-hidden="true" />
 
-      <div className="platform-experience__sticky">
-        <Container className="relative z-10">
-          <motion.header
-            className="platform-experience__header"
-            initial={reducedMotion ? false : { opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-8%" }}
-            transition={{
-              duration: reducedMotion ? 0 : motionTokens.duration.expressive,
-              ease: motionTokens.easing.emphasized,
-            }}
-          >
-            <div className="platform-experience__eyebrow">
-              <span />
-              {platformExperience.eyebrow}
-            </div>
-            <div className="platform-experience__heading-copy">
-              <h2 id="platform-experience-title">{platformExperience.title}</h2>
-              <p>{platformExperience.description}</p>
-            </div>
-            <div className="platform-experience__progress" aria-hidden="true">
-              <span>{String(activeStage + 1).padStart(2, "0")} / 05</span>
-              <i><b style={{ transform: `scaleX(${(activeStage + 1) / 5})` }} /></i>
-            </div>
-          </motion.header>
+      {/* Linha de entrada — continuidade do Ecossistema */}
+      <div className="pshow-section__entry" aria-hidden="true">
+        <span className="pshow-section__entry-line" />
+      </div>
 
-          <ProductLearningSurface
-            activeStage={activeStage}
-            reducedMotion={reducedMotion}
-            onStageChange={setActiveStage}
-          />
+      <Container className="pshow-section__container">
+        <PlatformShowcase />
+      </Container>
 
-          <div className="platform-experience__exit" aria-hidden="true">
-            <span><i /><i /><i /></span>
-            <b>pessoas e atividade entram no próximo capítulo</b>
-          </div>
-        </Container>
+      {/* Linha de saída — prepara Comunidade */}
+      <div className="pshow-section__exit" aria-hidden="true">
+        <span className="pshow-section__exit-label">o método se completa na comunidade</span>
+        <span className="pshow-section__exit-line" />
       </div>
     </section>
   );

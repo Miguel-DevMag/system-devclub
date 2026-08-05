@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 interface MobileNavigationProps {
   activeSection: string;
-  ctaHref: `#${string}`;
+  ctaHref: string;
   items: readonly NavigationItem[];
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -144,12 +144,14 @@ export function MobileNavigation({
 
                 <a
                   href={ctaHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={closeMenu}
                   className={cn(
                     "group mt-6 inline-flex min-h-12 w-full items-center justify-between rounded-full bg-white px-5 text-sm font-semibold text-neutral-950 outline-none transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 active:translate-y-0",
                   )}
                 >
-                  Explorar jornada
+                  Área do aluno
                   <ArrowUpRight aria-hidden="true" className="size-4" />
                 </a>
               </nav>

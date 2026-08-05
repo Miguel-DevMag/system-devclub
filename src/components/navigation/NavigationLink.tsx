@@ -6,6 +6,7 @@ export interface NavigationItem {
   label: string;
   href: `#${string}`;
   sectionId: string;
+  desktop?: boolean;
 }
 
 interface NavigationLinkProps {

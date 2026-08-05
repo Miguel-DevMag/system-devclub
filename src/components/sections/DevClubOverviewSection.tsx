@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform, useSpring } from "motion/react";
 
 import { Container } from "@/components/layout/Container";
 import { GrowthArchitecture } from "@/components/overview/GrowthArchitecture";
@@ -14,14 +14,22 @@ export function DevClubOverviewSection() {
     target: sectionRef,
     offset: ["start start", "end end"],
   });
-  const progressScale = useTransform(scrollYProgress, [0, 1], [0.08, 1]);
+
+  // Beyond MBA: Aplicando física de mola (Spring) no scroll para evitar o "engasgo" linear
+  const springProgress = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 24,
+    restDelta: 0.001
+  });
+
+  const progressScale = useTransform(springProgress, [0, 1], [0.08, 1]);
 
   return (
     <section
       ref={sectionRef}
       id="devclub-por-inteiro"
       aria-labelledby="devclub-overview-title"
-      className="overview-section relative overflow-hidden bg-[#111416] lg:h-[176svh]"
+      className="overview-section relative overflow-hidden bg-[#111416] lg:h-[132svh]"
     >
       <div className="overview-section__ambient" aria-hidden="true" />
       <div className="overview-section__grain" aria-hidden="true" />
@@ -39,17 +47,17 @@ export function DevClubOverviewSection() {
               }}
               className="relative max-w-xl lg:self-center"
             >
-              <div className="flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.26em] text-cyan-100/58">
-                <span className="h-px w-8 bg-cyan-200/60" />
+              <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.07] bg-glass px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-100/68">
+                <span className="animate-pulse-glow h-[5px] w-[5px] rounded-full bg-cyan-400/60" />
                 {devclubOverview.eyebrow}
               </div>
 
               <h2
                 id="devclub-overview-title"
-                className="mt-6 text-[clamp(2.35rem,5.2vw,4.7rem)] font-semibold leading-[0.94] tracking-[-0.058em] text-white"
+                className="mt-6 text-[clamp(2.35rem,5.2vw,4.7rem)] font-bold leading-[0.94] tracking-[-0.04em] text-white"
               >
                 Tudo o que acelera sua evolução
-                <span className="block text-white/55">conectado em uma única experiência.</span>
+                <span className="block text-white/55 text-glow">conectado em uma única experiência.</span>
               </h2>
 
               <p className="mt-6 max-w-[42ch] text-base leading-7 text-white/62 md:text-lg md:leading-8">
@@ -74,7 +82,7 @@ export function DevClubOverviewSection() {
               </div>
             </motion.header>
 
-            <GrowthArchitecture progress={scrollYProgress} />
+            <GrowthArchitecture progress={springProgress} />
           </div>
         </Container>
       </div>

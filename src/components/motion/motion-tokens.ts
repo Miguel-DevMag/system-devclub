@@ -12,23 +12,20 @@ export const motionTokens = {
     linear: "linear" as const,
   },
   depth: {
-    small: 6,
-    tilt: 0.55,
+    small: 8,
+    tilt: 0.38,
   },
   pointer: {
-    lightRange: 28,
+    lightRange: 9,
     spring: {
       stiffness: 120,
       damping: 28,
       mass: 0.42,
     },
   },
-  build: {
-    wakeDelay: 0.15,
-    channelDelay: 0.4,
-    channelDuration: 0.45,
-    settleDelay: 0.85,
-    settleDuration: 0.25,
+  hero: {
+    visualDelay: 0.12,
+    portraitDelay: 0.2,
   },
   authority: {
     nearDistance: 48,

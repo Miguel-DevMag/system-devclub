@@ -17,7 +17,7 @@ interface DepthLayerProps {
 export function DepthLayer({
   children,
   className,
-  entryDelay = motionTokens.build.wakeDelay,
+  entryDelay = motionTokens.hero.visualDelay,
   entryX = 0,
   entryY = 0,
   strength = 0.5,

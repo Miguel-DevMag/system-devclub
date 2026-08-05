@@ -1,60 +1,70 @@
-export interface CommunityExperienceZone {
+import guilhermePortrait from "@/assets/images/guilherme.jpeg";
+import lucasPortrait from "@/assets/images/lucas.webp";
+import rodolfoPortrait from "@/assets/images/rodolfo-hero.jpg";
+import saraPortrait from "@/assets/images/sara.jpeg";
+
+export type CommunityScene = {
   id: string;
-  index: string;
-  eyebrow: string;
-  title: string;
-  description: string;
-  outcome: string;
-  accent: string;
-}
+  image: string;
+  width: number;
+  height: number;
+  alt: string;
+  stage: string;
+  statement: string;
+  context: string;
+  position: "main" | "upper" | "middle" | "lower";
+};
 
 export const communityExperience = {
-  eyebrow: "Comunidade em movimento",
-  title: "Você aprende melhor quando não precisa evoluir sozinho.",
+  eyebrow: "Comunidade DevClub",
+  title: "Você não precisa evoluir sozinho.",
   description:
-    "Trocas, projetos, orientação e pessoas percorrendo desafios parecidos transformam estudo em uma experiência compartilhada.",
-  disclosure:
-    "Representação visual dos modos de colaboração que acompanham a jornada.",
-  zones: [
+    "Pessoas, professores e projetos conectam diferentes experiências em uma jornada de aprendizado compartilhada.",
+  scenes: [
     {
-      id: "estudo-em-conjunto",
-      index: "01",
-      eyebrow: "Estudo em conjunto",
-      title: "Uma dúvida deixa de ser um ponto isolado.",
-      description:
-        "Discussões e troca de conhecimento colocam diferentes perspectivas ao redor do mesmo desafio.",
-      outcome: "conhecimento em circulação",
-      accent: "#67e8f9",
+      id: "presenca",
+      image: rodolfoPortrait,
+      width: 960,
+      height: 1440,
+      alt: "Rodolfo Mori",
+      stage: "Pessoa",
+      statement: "Avance acompanhado.",
+      context: "Presença humana transforma conteúdo em uma jornada com direção.",
+      position: "main",
     },
     {
-      id: "mentorias-e-suporte",
-      index: "02",
-      eyebrow: "Mentorias e suporte",
-      title: "Contexto ajuda a enxergar o próximo passo.",
-      description:
-        "Orientação e suporte ajudam a interpretar obstáculos e seguir a jornada com mais direção.",
-      outcome: "direção durante o percurso",
-      accent: "#a78bfa",
+      id: "troca",
+      image: guilhermePortrait,
+      width: 480,
+      height: 480,
+      alt: "Guilherme",
+      stage: "Troca",
+      statement: "Troque experiências.",
+      context: "Diferentes repertórios ajudam a enxergar novos caminhos.",
+      position: "upper",
     },
     {
-      id: "projetos-e-desafios",
-      index: "03",
-      eyebrow: "Projetos e desafios",
-      title: "Partes diferentes encontram uma entrega comum.",
-      description:
-        "Prática e colaboração transformam aprendizados individuais em construção compartilhada.",
-      outcome: "repertório construído junto",
-      accent: "#f0abfc",
+      id: "orientacao",
+      image: lucasPortrait,
+      width: 1000,
+      height: 1000,
+      alt: "Lucas",
+      stage: "Orientação",
+      statement: "Construa com direção.",
+      context: "Orientação aproxima cada desafio do próximo passo possível.",
+      position: "middle",
     },
     {
-      id: "conexoes-e-oportunidades",
-      index: "04",
-      eyebrow: "Conexões e oportunidades",
-      title: "A jornada ganha outras perspectivas.",
-      description:
-        "Networking e aproximação com o mercado ampliam repertório e conectam aprendizado a novos contextos.",
-      outcome: "pessoas aproximam possibilidades",
-      accent: "#f6b981",
+      id: "construcao",
+      image: saraPortrait,
+      width: 480,
+      height: 480,
+      alt: "Sara",
+      stage: "Construção",
+      statement: "Aprenda em movimento.",
+      context: "Prática compartilhada transforma conhecimento em construção.",
+      position: "lower",
     },
-  ] satisfies CommunityExperienceZone[],
+  ] satisfies CommunityScene[],
+  exit: "Histórias compartilhadas ganham nome, rosto e trajetória.",
 } as const;

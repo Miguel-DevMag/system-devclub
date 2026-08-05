@@ -1,0 +1,47 @@
+@layer utilities {
+  .bg-glass {
+    background: linear-gradient(145deg, oklch(0.25 0.02 250 / 0.4), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(24px) saturate(120%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.03);
+  }
+  
+  .bg-glass-premium {
+    background: linear-gradient(168deg, oklch(0.278 0.019 252 / 0.96), oklch(0.235 0.016 252 / 0.93));
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 44px -26px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    border: 1px solid oklch(0.8 0.14 252 / 0.15);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 24px oklch(0.8 0.14 252 / 0.5);
+  }
+  
+  .border-glow {
+    box-shadow: 0 0 0 1px oklch(0.8 0.14 252 / 0.5), 0 0 24px -4px oklch(0.8 0.14 252 / 0.5);
+  }
+}
+
+/* Animations that are better handled in CSS for performance */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.8 0.14 252 / 0.4); }
+  50% { box-shadow: 0 0 0 9px oklch(0.8 0.14 252 / 0); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.6s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-glow {
+    animation: none !important;
+  }
+}
+
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}

@@ -3,7 +3,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { AuthoritySection } from "@/components/sections/AuthoritySection";
+import { EcosystemWall } from "@/components/ecosystem/EcosystemWall";
 import { DevClubOverviewSection } from "@/components/sections/DevClubOverviewSection";
 import { LearningJourneySection } from "@/components/sections/LearningJourneySection";
 import { PlatformExperienceSection } from "@/components/sections/PlatformExperienceSection";
@@ -19,7 +19,7 @@ function App() {
       <Header />
       <main id="conteudo-principal" tabIndex={-1}>
         <HeroSection />
-        <AuthoritySection />
+        <EcosystemWall />
         <DevClubOverviewSection />
         <LearningJourneySection />
         <PlatformExperienceSection />

@@ -1,0 +1,915 @@
+/**
+ * EcosystemWall — Composição editorial do ecossistema DevClub
+ *
+ * Conceito: Uma parede de estúdio.
+ * Não é uma grade de logos. Não são cards.
+ * É uma camada de credibilidade, mercado e tecnologia
+ * construída manualmente — com profundidade, linhas e respiração.
+ *
+ * Motion: apenas micro-profundidade via cursor e deslocamentos sutis.
+ * Sem voo, sem escala, sem rotação. Apenas presença.
+ */
+
+import {
+  useRef,
+  type PointerEvent,
+  useMemo,
+} from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  useInView,
+} from "motion/react";
+
+import { motionTokens } from "@/components/motion/motion-tokens";
+
+// ── Logos de tecnologia ─────────────────────────────────────────────────────
+import logoAWS from "@/assets/images/si-amazonwebservices.svg";
+import logoAzure from "@/assets/images/si-microsoftazure.svg";
+import logoGoogleCloud from "@/assets/images/si-googlecloud.svg";
+import logoOpenAI from "@/assets/images/si-openai.svg";
+import logoAnthropic from "@/assets/images/si-anthropic.svg";
+import logoMongoDB from "@/assets/images/si-mongodb.svg";
+import logoFigma from "@/assets/images/si-figma.svg";
+import logoGitHubCopilot from "@/assets/images/si-githubcopilot.svg";
+import logoGoogleGemini from "@/assets/images/si-googlegemini.svg";
+import logoN8N from "@/assets/images/si-n8n.svg";
+import logoLangChain from "@/assets/images/si-langchain.svg";
+import logoHuggingFace from "@/assets/images/si-huggingface.svg";
+import logoClaude from "@/assets/images/si-claude.svg";
+import logoNVIDIA from "@/assets/images/si-nvidia.svg";
+import logoDigitalOcean from "@/assets/images/si-digitalocean.svg";
+import logoPerplexity from "@/assets/images/si-perplexity.svg";
+import logoDeepSeek from "@/assets/images/si-deepseek.svg";
+import logoMistral from "@/assets/images/si-mistralai.svg";
+import logoNotion from "@/assets/images/si-notion.svg";
+import logoMeta from "@/assets/images/si-meta.svg";
+import logoIBM from "@/assets/images/si-ibm.svg";
+import logoNubank from "@/assets/images/si-nubank.svg";
+import logoSalesforce from "@/assets/images/si-salesforce.svg";
+import logoOracle from "@/assets/images/si-oracle.svg";
+import logoGoogle from "@/assets/images/si-google.svg";
+import logoMicrosoft from "@/assets/images/si-microsoft.svg";
+import logoDatabricks from "@/assets/images/si-databricks.svg";
+
+// ── Fotos de pessoas ────────────────────────────────────────────────────────
+import photoRodolfo from "@/assets/images/rodolfo.jpg";
+import photoGuilherme from "@/assets/images/guilherme.jpeg";
+import photoSara from "@/assets/images/sara.jpeg";
+import photoLucas from "@/assets/images/lucas.webp";
+import photoTiago from "@/assets/images/tiago.jpeg";
+
+// ── Logos institucionais ────────────────────────────────────────────────────
+import logoDevClub from "@/assets/images/logo-devclub-green.png";
+import logoStanford from "@/assets/images/stanford.svg";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tipos
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface LogoNodeProps {
+  src: string;
+  alt: string;
+  size?: "xs" | "sm" | "md" | "lg";
+  opacity?: number;
+  label?: string;
+}
+
+interface DepthNodeProps {
+  children: React.ReactNode;
+  strength?: number;
+  className?: string;
+  pointerX: ReturnType<typeof useMotionValue<number>>;
+  pointerY: ReturnType<typeof useMotionValue<number>>;
+  reducedMotion: boolean;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sub-componentes
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Nó de profundidade — responde ao cursor com micro-deslocamento */
+function DepthNode({
+  children,
+  strength = 0.3,
+  className = "",
+  pointerX,
+  pointerY,
+  reducedMotion,
+}: DepthNodeProps) {
+  const amplitude = 6 * Math.min(Math.max(strength, 0), 1);
+  const x = useTransform(pointerX, [-1, 1], [-amplitude, amplitude]);
+  const y = useTransform(pointerY, [-1, 1], [-amplitude, amplitude]);
+
+  return (
+    <motion.div
+      style={reducedMotion ? undefined : { x, y }}
+      className={`absolute transform-gpu ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Logo node — elemento de ecossistema discreto */
+function LogoNode({ src, alt, size = "sm", opacity = 0.54, label }: LogoNodeProps) {
+  const sizeMap = {
+    xs: "h-4 w-auto",
+    sm: "h-5 w-auto",
+    md: "h-6 w-auto",
+    lg: "h-8 w-auto",
+  };
+
+  return (
+    <span className="ecosystem-logo-node" style={{ "--logo-opacity": opacity } as React.CSSProperties}>
+      <img
+        src={src}
+        alt={alt}
+        aria-label={label ?? alt}
+        className={`${sizeMap[size]} ecosystem-logo-img`}
+        draggable={false}
+      />
+    </span>
+  );
+}
+
+/** Linha de texto mono — rótulo editorial */
+function MonoLabel({
+  children,
+  dim = true,
+}: {
+  children: React.ReactNode;
+  dim?: boolean;
+}) {
+  return (
+    <span
+      className="block font-mono text-[8px] uppercase tracking-[0.2em]"
+      style={{ color: dim ? "rgba(207,250,254,0.38)" : "rgba(207,250,254,0.62)" }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Foto de pessoa — elemento humano do ecossistema */
+function PersonNode({
+  src,
+  alt,
+  role,
+  size = "md",
+}: {
+  src: string;
+  alt: string;
+  role: string;
+  size?: "sm" | "md" | "lg";
+}) {
+  const sizeMap = {
+    sm: "h-10 w-10",
+    md: "h-14 w-14",
+    lg: "h-20 w-20",
+  };
+
+  return (
+    <span className="ecosystem-person-node">
+      <img
+        src={src}
+        alt={alt}
+        className={`${sizeMap[size]} rounded-full object-cover object-top ecosystem-person-img`}
+        draggable={false}
+      />
+      <span className="ecosystem-person-meta">
+        <MonoLabel>{alt}</MonoLabel>
+        <MonoLabel dim={true}>{role}</MonoLabel>
+      </span>
+    </span>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Composição Principal
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function EcosystemWall() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const boundsRef = useRef<DOMRect | null>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const reducedMotion = prefersReducedMotion ?? false;
+
+  const isInView = useInView(sectionRef, { once: true, margin: "-8% 0px" });
+
+  // Pointer tracking local (não herda do ExperienceSurface)
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const pointerX = useSpring(rawX, motionTokens.pointer.spring);
+  const pointerY = useSpring(rawY, motionTokens.pointer.spring);
+
+  const handlePointerEnter = (e: PointerEvent<HTMLElement>) => {
+    if (reducedMotion || e.pointerType !== "mouse") return;
+    boundsRef.current = e.currentTarget.getBoundingClientRect();
+  };
+
+  const handlePointerMove = (e: PointerEvent<HTMLElement>) => {
+    const b = boundsRef.current;
+    if (reducedMotion || e.pointerType !== "mouse" || !b) return;
+    rawX.set(((e.clientX - b.left) / b.width - 0.5) * 2);
+    rawY.set(((e.clientY - b.top) / b.height - 0.5) * 2);
+  };
+
+  const resetPointer = () => {
+    boundsRef.current = null;
+    rawX.set(0);
+    rawY.set(0);
+  };
+
+  // Luz pontual que segue o cursor
+  const lightX = useTransform(pointerX, [-1, 1], ["-18%", "18%"]);
+  const lightY = useTransform(pointerY, [-1, 1], ["-14%", "14%"]);
+
+  const depthProps = useMemo(
+    () => ({ pointerX, pointerY, reducedMotion }),
+    [pointerX, pointerY, reducedMotion]
+  );
+
+  return (
+    <section
+      ref={sectionRef}
+      id="ecossistema"
+      aria-labelledby="ecosystem-title"
+      className="ecosystem-wall relative isolate overflow-hidden"
+      onPointerEnter={handlePointerEnter}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetPointer}
+      onPointerCancel={resetPointer}
+    >
+      {/* ── Atmosfera de fundo ─────────────────────────────────────────── */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        {/* Base */}
+        <div className="absolute inset-0 bg-[#040810]" />
+
+        {/* Textura de ruído */}
+        <div className="noise-overlay" />
+
+        {/* Luz pontual que segue o cursor */}
+        <motion.div
+          aria-hidden="true"
+          style={reducedMotion ? undefined : { x: lightX, y: lightY }}
+          className="absolute left-[20%] top-[-10%] h-[90%] w-[70%] pointer-events-none"
+        >
+          <div className="h-full w-full bg-[radial-gradient(ellipse_52%_44%_at_50%_46%,rgba(103,232,249,0.07)_0%,rgba(99,102,241,0.04)_40%,transparent_72%)]" />
+        </motion.div>
+
+        {/* Glow institucional à direita */}
+        <div className="absolute right-[-8%] top-[20%] h-[60%] w-[46%] bg-[radial-gradient(ellipse_at_center,rgba(167,139,250,0.06),transparent_68%)]" />
+
+        {/* Glow esmeralda inferior */}
+        <div className="absolute bottom-[-4%] left-[30%] h-[40%] w-[44%] bg-[radial-gradient(ellipse_at_center,rgba(110,231,183,0.04),transparent_66%)]" />
+
+        {/* Grade estrutural de fundo — extremamente discreta */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
+            backgroundSize: "96px 96px",
+            maskImage:
+              "radial-gradient(ellipse at 50% 40%, black 10%, transparent 72%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse at 50% 40%, black 10%, transparent 72%)",
+            opacity: 0.38,
+          }}
+        />
+      </div>
+
+      {/* ── Conteúdo ───────────────────────────────────────────────────── */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="ecosystem-wall__inner">
+
+          {/* ── COLUNA ESQUERDA — Texto editorial + ancoragem ─────────── */}
+          <div className="ecosystem-wall__column-text">
+
+            {/* Eyebrow */}
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : undefined}
+              transition={{ duration: 0.6, delay: 0.1, ease: motionTokens.easing.emphasized }}
+              className="ecosystem-eyebrow"
+            >
+              <span aria-hidden="true" className="ecosystem-eyebrow__line" />
+              <span>Ecossistema</span>
+              <small>02 / mercado</small>
+            </motion.div>
+
+            {/* Heading */}
+            <motion.h2
+              id="ecosystem-title"
+              initial={reducedMotion ? false : { opacity: 0, y: 14 }}
+              animate={isInView ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 0.72, delay: 0.18, ease: motionTokens.easing.emphasized }}
+              className="ecosystem-wall__heading"
+            >
+              <span className="ecosystem-wall__heading-line">Você não</span>
+              <span className="ecosystem-wall__heading-line">aprende.</span>
+              <span className="ecosystem-wall__heading-accent">Você opera.</span>
+            </motion.h2>
+
+            {/* Descrição */}
+            <motion.p
+              initial={reducedMotion ? false : { opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 0.68, delay: 0.28, ease: motionTokens.easing.emphasized }}
+              className="ecosystem-wall__description"
+            >
+              O DevClub não entrega conteúdo. Entrega acesso a um ecossistema
+              real — as mesmas ferramentas, infraestruturas e empresas que
+              definem o mercado global de tecnologia.
+            </motion.p>
+
+            {/* Linha de dados — institucional */}
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : undefined}
+              transition={{ duration: 0.6, delay: 0.42, ease: motionTokens.easing.standard }}
+              className="ecosystem-wall__data-row"
+            >
+              <DataPill value="+40" label="Tecnologias" accent="cyan" />
+              <DataPill value="+180" label="Empresas no mercado" accent="violet" />
+              <DataPill value="2026" label="Edição" accent="emerald" />
+            </motion.div>
+
+            {/* Coluna de pessoas */}
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+              animate={isInView ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 0.64, delay: 0.52, ease: motionTokens.easing.emphasized }}
+              className="ecosystem-wall__people"
+            >
+              <MonoLabel>Comunidade ativa</MonoLabel>
+              <div className="ecosystem-wall__people-row">
+                <PersonNode src={photoRodolfo} alt="Rodolfo" role="Fundador" size="sm" />
+                <PersonNode src={photoGuilherme} alt="Guilherme" role="Dev Senior" size="sm" />
+                <PersonNode src={photoSara} alt="Sara" role="Engenheira" size="sm" />
+                <PersonNode src={photoLucas} alt="Lucas" role="Dev Full Stack" size="sm" />
+                <PersonNode src={photoTiago} alt="Tiago" role="Dev Backend" size="sm" />
+                <span className="ecosystem-people-more">
+                  <span className="ecosystem-people-more__count">+8k</span>
+                  <MonoLabel>membros</MonoLabel>
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Credencial Stanford */}
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : undefined}
+              transition={{ duration: 0.6, delay: 0.62, ease: motionTokens.easing.standard }}
+              className="ecosystem-wall__credential"
+            >
+              <span aria-hidden="true" className="ecosystem-credential__diamond" />
+              <img
+                src={logoStanford}
+                alt="Stanford University"
+                className="h-4 w-auto opacity-40 invert"
+                draggable={false}
+              />
+              <MonoLabel>Metodologia validada internacionalmente</MonoLabel>
+            </motion.div>
+          </div>
+
+          {/* ── PAREDE EDITORIAL — Composição visual ──────────────────── */}
+          <div className="ecosystem-wall__column-visual" aria-hidden="true">
+
+            {/* ── SVG de linhas estruturais — geometria editorial ─────── */}
+            <motion.svg
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : undefined}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              {/* Rail horizontal superior */}
+              <motion.path
+                d="M6,14 L94,14"
+                stroke="rgba(207,250,254,0.09)"
+                strokeWidth="0.18"
+                fill="none"
+                strokeLinecap="butt"
+                initial={reducedMotion ? false : { pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : undefined}
+                transition={{ duration: 1.1, delay: 0.35, ease: motionTokens.easing.emphasized }}
+              />
+              {/* Rail horizontal médio */}
+              <motion.path
+                d="M6,50 L94,50"
+                stroke="rgba(207,250,254,0.055)"
+                strokeWidth="0.14"
+                fill="none"
+                strokeLinecap="butt"
+                initial={reducedMotion ? false : { pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : undefined}
+                transition={{ duration: 1.0, delay: 0.45, ease: motionTokens.easing.emphasized }}
+              />
+              {/* Rail horizontal inferior */}
+              <motion.path
+                d="M16,86 L88,86"
+                stroke="rgba(167,139,250,0.07)"
+                strokeWidth="0.14"
+                fill="none"
+                strokeLinecap="butt"
+                initial={reducedMotion ? false : { pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : undefined}
+                transition={{ duration: 0.9, delay: 0.55, ease: motionTokens.easing.emphasized }}
+              />
+              {/* Vertical esquerdo */}
+              <motion.path
+                d="M6,14 L6,86"
+                stroke="rgba(103,232,249,0.08)"
+                strokeWidth="0.16"
+                fill="none"
+                strokeLinecap="butt"
+                initial={reducedMotion ? false : { pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : undefined}
+                transition={{ duration: 1.2, delay: 0.38, ease: motionTokens.easing.emphasized }}
+              />
+              {/* Vertical direito — mais fraco */}
+              <motion.path
+                d="M94,14 L94,86"
+                stroke="rgba(207,250,254,0.04)"
+                strokeWidth="0.12"
+                fill="none"
+                strokeLinecap="butt"
+                initial={reducedMotion ? false : { pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : undefined}
+                transition={{ duration: 1.0, delay: 0.48, ease: motionTokens.easing.emphasized }}
+              />
+              {/* Linha diagonal — tensão editorial */}
+              <motion.path
+                d="M6,50 L38,14"
+                stroke="rgba(103,232,249,0.06)"
+                strokeWidth="0.14"
+                fill="none"
+                strokeLinecap="butt"
+                initial={reducedMotion ? false : { pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : undefined}
+                transition={{ duration: 0.8, delay: 0.6, ease: motionTokens.easing.emphasized }}
+              />
+              {/* Linha diagonal inversa */}
+              <motion.path
+                d="M62,86 L94,50"
+                stroke="rgba(167,139,250,0.05)"
+                strokeWidth="0.14"
+                fill="none"
+                strokeLinecap="butt"
+                initial={reducedMotion ? false : { pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : undefined}
+                transition={{ duration: 0.8, delay: 0.65, ease: motionTokens.easing.emphasized }}
+              />
+              {/* Dots de interseção */}
+              <circle cx="6"  cy="14" r="0.7" fill="rgba(103,232,249,0.52)" />
+              <circle cx="94" cy="14" r="0.5" fill="rgba(167,139,250,0.36)" />
+              <circle cx="6"  cy="50" r="0.5" fill="rgba(103,232,249,0.32)" />
+              <circle cx="94" cy="50" r="0.4" fill="rgba(207,250,254,0.22)" />
+              <circle cx="6"  cy="86" r="0.5" fill="rgba(110,231,183,0.38)" />
+              <circle cx="94" cy="86" r="0.4" fill="rgba(167,139,250,0.24)" />
+              <circle cx="38" cy="14" r="0.42" fill="rgba(103,232,249,0.28)" />
+              <circle cx="62" cy="86" r="0.38" fill="rgba(167,139,250,0.22)" />
+            </motion.svg>
+
+            {/* ── Zona A — Topo: cloud + AI ──────────────────────────── */}
+
+            {/* Label de zona */}
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : undefined}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="ecosystem-zone-label"
+              style={{ top: "8%", left: "7%" }}
+            >
+              <span className="ecosystem-zone-label__tick" />
+              <MonoLabel>Infraestrutura cloud</MonoLabel>
+            </motion.div>
+
+            {/* AWS */}
+            <DepthNode {...depthProps} strength={0.22} className="top-[13%] left-[6%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.55 }}
+              >
+                <LogoNode src={logoAWS} alt="Amazon Web Services" size="md" opacity={0.7} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Azure */}
+            <DepthNode {...depthProps} strength={0.18} className="top-[10%] left-[30%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.62 }}
+              >
+                <LogoNode src={logoAzure} alt="Microsoft Azure" size="sm" opacity={0.54} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Google Cloud */}
+            <DepthNode {...depthProps} strength={0.28} className="top-[14%] left-[52%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.68 }}
+              >
+                <LogoNode src={logoGoogleCloud} alt="Google Cloud" size="sm" opacity={0.58} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Digital Ocean */}
+            <DepthNode {...depthProps} strength={0.14} className="top-[9%] left-[72%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.72 }}
+              >
+                <LogoNode src={logoDigitalOcean} alt="DigitalOcean" size="xs" opacity={0.38} />
+              </motion.div>
+            </DepthNode>
+
+            {/* NVIDIA */}
+            <DepthNode {...depthProps} strength={0.32} className="top-[11%] left-[85%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.74 }}
+              >
+                <LogoNode src={logoNVIDIA} alt="NVIDIA" size="sm" opacity={0.62} />
+              </motion.div>
+            </DepthNode>
+
+            {/* ── Zona B — Centro superior: IA ────────────────────────── */}
+
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : undefined}
+              transition={{ duration: 0.5, delay: 0.56 }}
+              className="ecosystem-zone-label"
+              style={{ top: "43%", left: "7%" }}
+            >
+              <span className="ecosystem-zone-label__tick" style={{ background: "rgba(167,139,250,0.6)" }} />
+              <MonoLabel>Inteligência artificial</MonoLabel>
+            </motion.div>
+
+            {/* OpenAI */}
+            <DepthNode {...depthProps} strength={0.36} className="top-[49%] left-[6%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <LogoNode src={logoOpenAI} alt="OpenAI" size="md" opacity={0.76} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Anthropic */}
+            <DepthNode {...depthProps} strength={0.28} className="top-[46%] left-[26%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.66 }}
+              >
+                <LogoNode src={logoAnthropic} alt="Anthropic" size="sm" opacity={0.6} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Claude */}
+            <DepthNode {...depthProps} strength={0.2} className="top-[52%] left-[42%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.7 }}
+              >
+                <LogoNode src={logoClaude} alt="Claude" size="xs" opacity={0.44} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Google Gemini */}
+            <DepthNode {...depthProps} strength={0.26} className="top-[47%] left-[58%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.72 }}
+              >
+                <LogoNode src={logoGoogleGemini} alt="Google Gemini" size="sm" opacity={0.56} />
+              </motion.div>
+            </DepthNode>
+
+            {/* DeepSeek */}
+            <DepthNode {...depthProps} strength={0.18} className="top-[53%] left-[74%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.74 }}
+              >
+                <LogoNode src={logoDeepSeek} alt="DeepSeek" size="xs" opacity={0.38} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Mistral */}
+            <DepthNode {...depthProps} strength={0.14} className="top-[45%] left-[88%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.76 }}
+              >
+                <LogoNode src={logoMistral} alt="Mistral AI" size="xs" opacity={0.34} />
+              </motion.div>
+            </DepthNode>
+
+            {/* ── Zona C — Centro: ferramentas e plataformas ─────────── */}
+
+            {/* GitHub Copilot */}
+            <DepthNode {...depthProps} strength={0.24} className="top-[31%] left-[18%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.63 }}
+              >
+                <LogoNode src={logoGitHubCopilot} alt="GitHub Copilot" size="sm" opacity={0.52} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Figma */}
+            <DepthNode {...depthProps} strength={0.3} className="top-[28%] left-[36%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.67 }}
+              >
+                <LogoNode src={logoFigma} alt="Figma" size="xs" opacity={0.42} />
+              </motion.div>
+            </DepthNode>
+
+            {/* LangChain */}
+            <DepthNode {...depthProps} strength={0.22} className="top-[34%] left-[52%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.69 }}
+              >
+                <LogoNode src={logoLangChain} alt="LangChain" size="xs" opacity={0.4} />
+              </motion.div>
+            </DepthNode>
+
+            {/* N8N */}
+            <DepthNode {...depthProps} strength={0.28} className="top-[29%] left-[68%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.71 }}
+              >
+                <LogoNode src={logoN8N} alt="n8n" size="sm" opacity={0.54} />
+              </motion.div>
+            </DepthNode>
+
+            {/* HuggingFace */}
+            <DepthNode {...depthProps} strength={0.16} className="top-[36%] left-[82%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.73 }}
+              >
+                <LogoNode src={logoHuggingFace} alt="Hugging Face" size="xs" opacity={0.36} />
+              </motion.div>
+            </DepthNode>
+
+            {/* MongoDB */}
+            <DepthNode {...depthProps} strength={0.2} className="top-[67%] left-[14%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.64 }}
+              >
+                <LogoNode src={logoMongoDB} alt="MongoDB" size="xs" opacity={0.42} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Notion */}
+            <DepthNode {...depthProps} strength={0.16} className="top-[70%] left-[30%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.68 }}
+              >
+                <LogoNode src={logoNotion} alt="Notion" size="xs" opacity={0.36} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Perplexity */}
+            <DepthNode {...depthProps} strength={0.22} className="top-[65%] left-[48%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.72 }}
+              >
+                <LogoNode src={logoPerplexity} alt="Perplexity" size="xs" opacity={0.38} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Databricks */}
+            <DepthNode {...depthProps} strength={0.18} className="top-[71%] left-[62%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.75 }}
+              >
+                <LogoNode src={logoDatabricks} alt="Databricks" size="xs" opacity={0.34} />
+              </motion.div>
+            </DepthNode>
+
+            {/* ── Zona D — Base: mercado corporativo ──────────────────── */}
+
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : undefined}
+              transition={{ duration: 0.5, delay: 0.62 }}
+              className="ecosystem-zone-label"
+              style={{ top: "79%", left: "7%" }}
+            >
+              <span className="ecosystem-zone-label__tick" style={{ background: "rgba(110,231,183,0.56)" }} />
+              <MonoLabel>Mercado corporativo</MonoLabel>
+            </motion.div>
+
+            {/* Google */}
+            <DepthNode {...depthProps} strength={0.24} className="top-[85%] left-[6%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.66 }}
+              >
+                <LogoNode src={logoGoogle} alt="Google" size="sm" opacity={0.56} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Microsoft */}
+            <DepthNode {...depthProps} strength={0.2} className="top-[82%] left-[24%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.7 }}
+              >
+                <LogoNode src={logoMicrosoft} alt="Microsoft" size="sm" opacity={0.52} />
+              </motion.div>
+            </DepthNode>
+
+            {/* IBM */}
+            <DepthNode {...depthProps} strength={0.16} className="top-[87%] left-[40%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.73 }}
+              >
+                <LogoNode src={logoIBM} alt="IBM" size="sm" opacity={0.46} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Meta */}
+            <DepthNode {...depthProps} strength={0.22} className="top-[83%] left-[56%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.76 }}
+              >
+                <LogoNode src={logoMeta} alt="Meta" size="sm" opacity={0.48} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Nubank */}
+            <DepthNode {...depthProps} strength={0.18} className="top-[88%] left-[70%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.78 }}
+              >
+                <LogoNode src={logoNubank} alt="Nubank" size="xs" opacity={0.38} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Salesforce */}
+            <DepthNode {...depthProps} strength={0.14} className="top-[84%] left-[82%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.8 }}
+              >
+                <LogoNode src={logoSalesforce} alt="Salesforce" size="xs" opacity={0.34} />
+              </motion.div>
+            </DepthNode>
+
+            {/* Oracle */}
+            <DepthNode {...depthProps} strength={0.12} className="top-[89%] left-[91%]">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5, delay: 0.82 }}
+              >
+                <LogoNode src={logoOracle} alt="Oracle" size="xs" opacity={0.28} />
+              </motion.div>
+            </DepthNode>
+
+            {/* ── Âncora central — DevClub como hub ───────────────────── */}
+            <DepthNode {...depthProps} strength={0.08} className="top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0, scale: 0.92 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : undefined}
+                transition={{ duration: 0.8, delay: 0.45, ease: motionTokens.easing.emphasized }}
+                className="ecosystem-hub"
+              >
+                <div className="ecosystem-hub__glow" />
+                <img
+                  src={logoDevClub}
+                  alt=""
+                  className="h-10 w-auto opacity-[0.82]"
+                  draggable={false}
+                />
+                <MonoLabel>Hub · DevClub</MonoLabel>
+              </motion.div>
+            </DepthNode>
+
+            {/* Fade de borda — integra ao fundo */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to right, #040810 0%, transparent 8%, transparent 92%, #040810 100%), linear-gradient(to bottom, #040810 0%, transparent 6%, transparent 94%, #040810 100%)",
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Fade de transição inferior */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-neutral-950"
+      />
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DataPill — indicador editorial
+// ─────────────────────────────────────────────────────────────────────────────
+
+function DataPill({
+  value,
+  label,
+  accent = "cyan",
+}: {
+  value: string;
+  label: string;
+  accent?: "cyan" | "violet" | "emerald";
+}) {
+  const colors = {
+    cyan: {
+      value: "rgba(103,232,249,0.88)",
+      label: "rgba(207,250,254,0.46)",
+      line: "rgba(103,232,249,0.52)",
+    },
+    violet: {
+      value: "rgba(167,139,250,0.88)",
+      label: "rgba(196,181,253,0.46)",
+      line: "rgba(167,139,250,0.52)",
+    },
+    emerald: {
+      value: "rgba(110,231,183,0.88)",
+      label: "rgba(167,243,208,0.46)",
+      line: "rgba(110,231,183,0.52)",
+    },
+  };
+
+  const c = colors[accent];
+
+  return (
+    <div className="ecosystem-data-pill">
+      <span
+        className="ecosystem-data-pill__line"
+        style={{ background: c.line }}
+        aria-hidden="true"
+      />
+      <span
+        className="ecosystem-data-pill__value"
+        style={{ color: c.value }}
+      >
+        {value}
+      </span>
+      <span
+        className="ecosystem-data-pill__label"
+        style={{ color: c.label }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}

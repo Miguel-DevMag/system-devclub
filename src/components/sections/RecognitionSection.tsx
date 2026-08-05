@@ -1,101 +1,120 @@
+import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
+import certificateIcon from "@/assets/images/icon-certificate.svg";
+import checkIcon from "@/assets/images/icon-checkmark.svg";
+import diplomaIcon from "@/assets/images/icon-diploma.svg";
+import toolsIcon from "@/assets/images/icon-tools.svg";
 import { Container } from "@/components/layout/Container";
 import { motionTokens } from "@/components/motion/motion-tokens";
-import { recognition } from "@/data/recognition";
+
+const milestones = [
+  {
+    id: "aprender",
+    label: "Aprender",
+    result: "Repertório técnico",
+    description: "Fundamentos e tecnologias organizados em uma trilha compreensível.",
+    icon: certificateIcon,
+  },
+  {
+    id: "praticar",
+    label: "Praticar",
+    result: "Autonomia",
+    description: "Critério para testar caminhos, interpretar desafios e seguir aprendendo.",
+    icon: checkIcon,
+  },
+  {
+    id: "construir",
+    label: "Construir",
+    result: "Projeto publicado",
+    description: "Uma entrega concreta torna o conhecimento visível e compartilhável.",
+    icon: toolsIcon,
+  },
+  {
+    id: "compartilhar",
+    label: "Compartilhar",
+    result: "Portfólio",
+    description: "Projetos reunidos comunicam processo, decisões e evolução técnica.",
+    icon: diplomaIcon,
+  },
+] as const;
 
 export function RecognitionSection() {
+  const [activeMilestone, setActiveMilestone] = useState(0);
   const prefersReducedMotion = useReducedMotion();
-  const reducedMotion = prefersReducedMotion ?? false;
+  const active = milestones[activeMilestone];
 
   return (
     <section
       id="reconhecimento"
       aria-labelledby="recognition-title"
-      className="recognition-section"
+      className="institutional-recognition"
     >
-      <div className="recognition-section__entry" aria-hidden="true">
-        <span>capacidade construída</span>
-        <i />
-        <strong>entra em circulação</strong>
-      </div>
+      <div className="recognition-impact" aria-hidden="true">IMPACTO</div>
+      <Container>
+        <header className="institutional-heading institutional-heading--recognition">
+          <p className="institutional-eyebrow">Reconhecimento</p>
+          <h2 id="recognition-title">
+            O conhecimento ganha valor quando vira construção.
+          </h2>
+          <p>
+            Aprender é o começo. Prática, projetos e repertório tornam a evolução
+            concreta sem prometer um resultado profissional automático.
+          </p>
+        </header>
 
-      <Container className="recognition-section__container">
-        <motion.header
-          className="recognition-section__header"
-          initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-12%" }}
-          transition={{
-            duration: reducedMotion ? 0 : motionTokens.duration.expressive,
-            ease: motionTokens.easing.emphasized,
-          }}
-        >
-          <div className="recognition-section__eyebrow"><span />{recognition.eyebrow}</div>
-          <div>
-            <h2 id="recognition-title">{recognition.title}</h2>
-            <p>{recognition.description}</p>
-          </div>
-        </motion.header>
-
-        <div className="recognition-section__field">
-          <div className="recognition-section__impact-word" aria-hidden="true">IMPACTO</div>
-          <div className="recognition-section__impact-mark" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </div>
-
-          <motion.div
-            className="recognition-section__sequence"
-            initial={reducedMotion ? false : { opacity: 0.5 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-16%" }}
-            transition={{
-              duration: reducedMotion ? 0 : motionTokens.duration.expressive,
-              ease: motionTokens.easing.standard,
-            }}
-          >
-            <motion.i
-              aria-hidden="true"
-              initial={reducedMotion ? false : { scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true, margin: "-16%" }}
+        <div className="recognition-route">
+          <div className="recognition-route__line" aria-hidden="true">
+            <motion.span
+              animate={{ scaleX: (activeMilestone + 1) / milestones.length }}
               transition={{
-                duration: reducedMotion ? 0 : motionTokens.duration.cinematic,
-                ease: motionTokens.easing.flow,
+                duration: prefersReducedMotion ? 0 : motionTokens.duration.responsive,
+                ease: motionTokens.easing.emphasized,
               }}
             />
-            <ol aria-label="Progressão da jornada até impacto">
-              {recognition.sequence.map((step) => (
-                <li key={step.index}>
-                  <span>{step.index}</span>
-                  <strong>{step.label}</strong>
-                </li>
-              ))}
-            </ol>
-          </motion.div>
+          </div>
+
+          <ol>
+            {milestones.map((milestone, index) => (
+              <li key={milestone.id} data-active={activeMilestone === index}>
+                <button
+                  type="button"
+                  aria-pressed={activeMilestone === index}
+                  onClick={() => setActiveMilestone(index)}
+                  onFocus={() => setActiveMilestone(index)}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType === "mouse") setActiveMilestone(index);
+                  }}
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{milestone.label}</strong>
+                </button>
+              </li>
+            ))}
+          </ol>
 
           <motion.article
-            className="recognition-section__outcome"
-            initial={reducedMotion ? false : { opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-12%" }}
+            key={active.id}
+            className="recognition-outcome"
+            initial={prefersReducedMotion ? false : { opacity: 0.72, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{
-              duration: reducedMotion ? 0 : motionTokens.duration.expressive,
+              duration: prefersReducedMotion ? 0 : motionTokens.duration.responsive,
               ease: motionTokens.easing.emphasized,
             }}
           >
-            <span>{recognition.outcome.eyebrow}</span>
-            <h3>{recognition.outcome.title}</h3>
-            <p>{recognition.outcome.description}</p>
+            <img src={active.icon} width="48" height="48" alt="" />
+            <div>
+              <span>Possível resultado da formação</span>
+              <h3>{active.result}</h3>
+              <p>{active.description}</p>
+            </div>
           </motion.article>
         </div>
 
-        <div className="recognition-section__exit" aria-hidden="true">
-          <span>impacto pede clareza</span>
-          <i />
-          <strong>as dúvidas encontram contexto</strong>
+        <div className="recognition-to-faq" aria-hidden="true">
+          <span />
+          <small>clareza para decidir</small>
         </div>
       </Container>
     </section>

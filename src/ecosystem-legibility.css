@@ -1,0 +1,13 @@
+.ecosystem-relation__meta {
+  color: rgba(207, 250, 254, 0.58);
+  font-size: 0.5625rem;
+}
+
+.ecosystem-relation__description {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.75rem;
+}
+
+.ecosystem-core small {
+  color: rgba(255, 255, 255, 0.46);
+}

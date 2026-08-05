@@ -1,169 +1,133 @@
-import { useRef } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "motion/react";
+import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 
+import arnobioPortrait from "@/assets/images/Arnobio.jpg";
+import guilhermePortrait from "@/assets/images/guilherme-soares.jpg";
+import lucasPortrait from "@/assets/images/lucas.webp";
+import robsonPortrait from "@/assets/images/robson.jpeg";
+import rodolfoPortrait from "@/assets/images/rodolfo-2.png";
+import rodrigoPortrait from "@/assets/images/rodrigo.jpeg";
+import saraPortrait from "@/assets/images/sara.jpeg";
+import tiagoPortrait from "@/assets/images/tiago.jpeg";
 import { Container } from "@/components/layout/Container";
 import { motionTokens } from "@/components/motion/motion-tokens";
-import { peopleResults } from "@/data/people-results";
+
+const featuredPeople = [
+  {
+    id: "rodolfo",
+    name: "Rodolfo Mori",
+    role: "Fundador do DevClub",
+    image: rodolfoPortrait,
+    width: 1920,
+    height: 2880,
+    position: "founder",
+  },
+  {
+    id: "guilherme",
+    name: "Guilherme",
+    image: guilhermePortrait,
+    width: 480,
+    height: 480,
+    position: "upper",
+  },
+  {
+    id: "sara",
+    name: "Sara",
+    image: saraPortrait,
+    width: 480,
+    height: 480,
+    position: "lower",
+  },
+] as const;
+
+const editorialBand = [
+  { name: "Lucas", image: lucasPortrait },
+  { name: "Arnobio", image: arnobioPortrait },
+  { name: "Robson", image: robsonPortrait },
+  { name: "Rodrigo", image: rodrigoPortrait },
+  { name: "Tiago", image: tiagoPortrait },
+] as const;
 
 export function PeopleResultsSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const fieldRef = useRef<HTMLDivElement>(null);
+  const [activePerson, setActivePerson] = useState<string | null>(null);
   const prefersReducedMotion = useReducedMotion();
-  const reducedMotion = prefersReducedMotion ?? false;
-  const primaryPerson = peopleResults.people[0];
-  const pointerX = useMotionValue(0);
-  const pointerY = useMotionValue(0);
-  const lightX = useSpring(pointerX, motionTokens.pointer.spring);
-  const lightY = useSpring(pointerY, motionTokens.pointer.spring);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  const personFocus = useTransform(scrollYProgress, [0, 0.52, 1], [1, 0.76, 0.58]);
-  const capabilityFocus = useTransform(scrollYProgress, [0, 0.38, 0.82], [0.56, 0.78, 1]);
-  const capabilityX = useTransform(scrollYProgress, [0.16, 0.72], [18, 0]);
-  const transmissionScale = useTransform(scrollYProgress, [0.12, 0.72], [0.04, 1]);
-  const transmissionGlow = useTransform(scrollYProgress, [0.18, 0.68, 1], [0.34, 1, 0.66]);
-
-  const moveLight = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (reducedMotion || event.pointerType === "touch" || !fieldRef.current) return;
-    const bounds = fieldRef.current.getBoundingClientRect();
-    const relativeX = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const relativeY = (event.clientY - bounds.top) / bounds.height - 0.5;
-    pointerX.set(relativeX * 8);
-    pointerY.set(relativeY * 8);
-  };
-
-  const resetLight = () => {
-    pointerX.set(0);
-    pointerY.set(0);
-  };
 
   return (
     <section
-      ref={sectionRef}
       id="pessoas-resultados"
       aria-labelledby="people-results-title"
-      className="people-results-section"
+      className="institutional-people"
     >
-      <div className="people-results__continuity" aria-hidden="true">
-        <span>conexões do campus</span>
-        <i />
-        <strong>ganham autoria humana</strong>
-      </div>
+      <Container>
+        <header className="institutional-heading institutional-heading--people">
+          <p className="institutional-eyebrow">Aprenda com quem vive tecnologia</p>
+          <h2 id="people-results-title">
+            Experiência prática para orientar cada etapa.
+          </h2>
+          <p>
+            Professores reais aproximam repertório técnico, prática e direção ao
+            longo da jornada.
+          </p>
+        </header>
 
-      <div className="people-results__sticky">
-        <Container className="people-results__container">
-          <motion.header
-            className="people-results__header"
-            initial={reducedMotion ? false : { opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-8%" }}
-            transition={{
-              duration: reducedMotion ? 0 : motionTokens.duration.expressive,
-              ease: motionTokens.easing.emphasized,
-            }}
-          >
-            <div className="people-results__eyebrow"><span />{peopleResults.eyebrow}</div>
-            <div>
-              <h2 id="people-results-title">{peopleResults.title}</h2>
-              <p>{peopleResults.description}</p>
-            </div>
-            <small>{peopleResults.disclosure}</small>
-          </motion.header>
+        <div
+          className="people-portraits"
+          onPointerLeave={() => setActivePerson(null)}
+        >
+          {featuredPeople.map((person) => {
+            const active = activePerson === person.id;
+            return (
+              <motion.figure
+                key={person.id}
+                data-position={person.position}
+                data-active={active}
+                className="people-portraits__figure"
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") setActivePerson(person.id);
+                }}
+                animate={
+                  prefersReducedMotion
+                    ? undefined
+                    : { x: active ? 3 : 0, y: active ? -4 : 0 }
+                }
+                transition={{
+                  duration: motionTokens.duration.responsive,
+                  ease: motionTokens.easing.standard,
+                }}
+              >
+                <img
+                  src={person.image}
+                  width={person.width}
+                  height={person.height}
+                  alt={person.name}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>
+                  <strong>{person.name}</strong>
+                  {"role" in person && <span>{person.role}</span>}
+                </figcaption>
+              </motion.figure>
+            );
+          })}
+        </div>
 
-          <div
-            ref={fieldRef}
-            className="people-results__field"
-            onPointerMove={moveLight}
-            onPointerLeave={resetLight}
-          >
-            <motion.div
-              className="people-results__pointer-light"
-              style={reducedMotion ? undefined : { x: lightX, y: lightY }}
-              aria-hidden="true"
-            />
-
-            <motion.article
-              className="people-results__person"
-              style={reducedMotion ? undefined : { opacity: personFocus }}
-              aria-labelledby="people-results-person-name"
-            >
-              <div className="people-results__person-meta">
-                <span>01 / pessoa confirmada</span>
-                <i />
-                <strong>{primaryPerson.role}</strong>
-              </div>
-
-              <div className="people-results__portrait" aria-hidden="true">
-                <div className="people-results__name-plane">
-                  <span>RODOLFO</span>
-                  <span>MORI</span>
-                </div>
-                <div className="people-results__human-form">
-                  <i />
-                  <i />
-                </div>
-                <div className="people-results__registration-mark">DC / HUMAN LAYER</div>
-              </div>
-
-              <div className="people-results__person-copy">
-                <p className="sr-only" id="people-results-person-name">{primaryPerson.name}</p>
-                <p>{primaryPerson.context}</p>
-              </div>
-            </motion.article>
-
-            <div className="people-results__transmission" aria-hidden="true">
-              <motion.i
-                style={reducedMotion ? undefined : { scaleY: transmissionScale, opacity: transmissionGlow }}
+        <div className="people-band" role="list" aria-label="Professores DevClub">
+          {editorialBand.map((person) => (
+            <figure key={person.name} role="listitem">
+              <img
+                src={person.image}
+                width="480"
+                height="480"
+                alt={person.name}
+                loading="lazy"
+                decoding="async"
               />
-              <span>experiência</span>
-              <b />
-              <span>prática</span>
-              <b />
-              <span>capacidade</span>
-            </div>
-
-            <motion.article
-              className="people-results__result"
-              style={reducedMotion ? undefined : { opacity: capabilityFocus, x: capabilityX }}
-              aria-labelledby="people-results-capability-title"
-            >
-              <header>
-                <span>{peopleResults.result.eyebrow}</span>
-                <h3 id="people-results-capability-title">{peopleResults.result.title}</h3>
-                <p>{peopleResults.result.description}</p>
-              </header>
-
-              <ol className="people-results__capabilities">
-                {peopleResults.capabilities.map((capability) => (
-                  <li key={capability.index}>
-                    <span>{capability.index}</span>
-                    <div>
-                      <p><strong>{capability.action}</strong> {capability.title}</p>
-                      <small>{capability.description}</small>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </motion.article>
-          </div>
-
-          <div className="people-results__exit" aria-hidden="true">
-            <span>capacidade construída</span>
-            <i />
-            <strong>busca reconhecimento</strong>
-          </div>
-        </Container>
-      </div>
+              <figcaption>{person.name}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </Container>
     </section>
   );
 }
